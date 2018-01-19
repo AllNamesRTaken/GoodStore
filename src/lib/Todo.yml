@@ -1,0 +1,8 @@
+TODO
+- write consumer usage doc
+- write architecture doc
+- create package folder and check in
+- install sinion on server
+- support search on the datastore
+- support filter on the datastore
+- support pass through parameters + force reload
