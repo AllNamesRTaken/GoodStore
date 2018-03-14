@@ -1,7 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var goodcore_1 = require("goodcore");
-exports.mocDataResult1 = [
+import { List, MocData } from "goodcore";
+export const mocDataResult1 = [
     {
         totalPx: { x: 200, y: 400 },
         pxScope: { start: { x: 0, y: 0 }, stop: { x: 39, y: 19 } },
@@ -72,7 +70,7 @@ exports.mocDataResult1 = [
         cellsPerPage: { x: 2, y: 2 }
     }
 ];
-exports.mocDataResult2 = [
+export const mocDataResult2 = [
     {
         totalPx: { x: 200, y: 400 },
         pxScope: { start: { x: 0, y: 0 }, stop: { x: 29, y: 29 } },
@@ -111,32 +109,32 @@ exports.mocDataResult2 = [
         cellsPerPage: { x: 2, y: 2 }
     }
 ];
-exports.mocDataResult3 = [
+export const mocDataResult3 = [
     {
         totalPx: { x: 100, y: 100 },
         pxScope: { start: { x: 0, y: 0 }, stop: { x: 100, y: 100 } },
         totalCells: { x: 100, y: 100 },
         dataPort: { pos: { x: 0, y: 0 }, size: { x: 100, y: 100 } },
-        r: (new goodcore_1.List(goodcore_1.MocData.numericArray(100, goodcore_1.MocData.MocDataType.LinearInt))).map(function (el, i) {
+        r: (new List(MocData.numericArray(100, MocData.MocDataType.LinearInt))).map((el, i) => {
             return { i: 0, h: 1, d: null,
-                c: (new goodcore_1.List(goodcore_1.MocData.numericArray(100, goodcore_1.MocData.MocDataType.LinearInt))).map(function (el, j) {
-                    return { i: { x: j, y: i }, w: 1, d: goodcore_1.MocData.randomInt() };
+                c: (new List(MocData.numericArray(100, MocData.MocDataType.LinearInt))).map((el, j) => {
+                    return { i: { x: j, y: i }, w: 1, d: MocData.randomInt() };
                 }).values
             };
         }).values,
         cellsPerPage: { x: 10, y: 10 }
     }
 ];
-exports.mocDataResult4 = [
+export const mocDataResult4 = [
     {
         totalPx: { x: 100, y: 100 },
         pxScope: { start: { x: 0, y: 0 }, stop: { x: 100, y: 100 } },
         totalCells: { x: 100, y: 100 },
         dataPort: { pos: { x: 0, y: 0 }, size: { x: 100, y: 100 } },
-        r: (new goodcore_1.List(goodcore_1.MocData.numericArray(100, goodcore_1.MocData.MocDataType.LinearInt))).map(function (el, i) {
+        r: (new List(MocData.numericArray(100, MocData.MocDataType.LinearInt))).map((el, i) => {
             return { i: 0, h: 1, d: null,
-                c: (new goodcore_1.List(goodcore_1.MocData.numericArray(100, goodcore_1.MocData.MocDataType.LinearInt))).map(function (el, j) {
-                    return { i: { x: j, y: i }, w: 1, d: goodcore_1.MocData.randomInt() };
+                c: (new List(MocData.numericArray(100, MocData.MocDataType.LinearInt))).map((el, j) => {
+                    return { i: { x: j, y: i }, w: 1, d: MocData.randomInt() };
                 }).values
             };
         }).values,
