@@ -1,4 +1,4 @@
-import { Initable, Poolable, Rect, Vec2, IPoolable, IPool } from "goodcore";
+import { Initable, Poolable, Rect, Vec2 } from "goodcore";
 import { DataRow } from "./DataRow";
 import { IPageInfoDto } from "./Dto/IPageInfoDto";
 
@@ -7,12 +7,15 @@ export interface IDataPageDictionary {
 }
 @Poolable
 @Initable
-export class DataPage implements IPageInfoDto, IPoolable {
-	public __pool__: IPool<IPoolable>;
-	public release(): void {
+export class DataPage implements IPageInfoDto, IInitable<DataPage>, IPoolable {
+	init(obj: any, mapping?: any): this {
 		throw new Error("Method not implemented.");
 	}
-	public initPool(pool: IPool<IPoolable>): void {
+	__pool__: IPool<IPoolable>;
+	release(): void {
+		throw new Error("Method not implemented.");
+	}
+	initPool(pool: IPool<IPoolable>): void {
 		throw new Error("Method not implemented.");
 	}
 	private _id: number = 0;

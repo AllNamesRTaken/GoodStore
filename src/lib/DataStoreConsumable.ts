@@ -1,9 +1,9 @@
-import { Initable, Range2, Rect, Vec2, IInitable } from "goodcore";
+import { Initable, Range2, Rect, Vec2 } from "goodcore";
 import { DataRow } from "./DataRow";
 
 @Initable
-export class DataStoreConsumable implements IInitable<DataStoreConsumable> {
-	public init(obj: Partial<DataStoreConsumable>): DataStoreConsumable {
+export class DataStoreConsumable  implements IInitable<DataStoreConsumable> {
+	init(obj: any, mapping?: any): this {
 		throw new Error("Method not implemented.");
 	}
 	public totalCells: Vec2 = new Vec2();

@@ -1,10 +1,9 @@
-import { Initable, Range2, Vec2, IInitable } from "goodcore";
-import { IRange2 } from "goodcore";
+import { Initable, Range2, Vec2 } from "goodcore";
 import { IRequestConfig } from "./IRequestConfig";
 
 @Initable
 export class RequestConfig implements IRequestConfig, IInitable<RequestConfig> {
-	public init(obj: Partial<RequestConfig>): RequestConfig {
+	init(obj: any, mapping?: any): this {
 		throw new Error("Method not implemented.");
 	}
 	public _viewPort: Range2 = new Range2();

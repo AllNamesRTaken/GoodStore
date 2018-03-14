@@ -1,18 +1,18 @@
-import { Initable, Poolable, IPoolable, IPool, IInitable } from "goodcore";
+import { Initable, Poolable } from "goodcore";
 import { IDataCellDto } from "./Dto/IDataCellDto";
 import { IDataRowDto } from "./Dto/IDataRowDto";
 
 @Poolable
 @Initable
-export class DataRow implements IDataRowDto, IPoolable, IInitable<DataRow> {
-	public init(obj: Partial<DataRow>): DataRow {
+export class DataRow implements IDataRowDto, IInitable<DataRow>, IPoolable {
+	__pool__: IPool<IPoolable>;
+	release(): void {
 		throw new Error("Method not implemented.");
 	}
-	public __pool__: IPool<IPoolable>;
-	public release(): void {
+	initPool(pool: IPool<IPoolable>): void {
 		throw new Error("Method not implemented.");
 	}
-	public initPool(pool: IPool<IPoolable>): void {
+	init(obj: any, mapping?: any): this {
 		throw new Error("Method not implemented.");
 	}
 	public i: number = 0;

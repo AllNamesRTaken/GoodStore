@@ -1,5 +1,4 @@
-import { Range2, Vec2 } from "goodcore";
-import { IRange2 } from "goodcore";
+import { Rect, Range2, Vec2 } from "goodcore";
 import { BehaviorSubject } from "rxjs/BehaviorSubject";
 import { Subscription } from "rxjs/Subscription";
 import { DataStoreConsumable } from "./DataStoreConsumable";
@@ -101,7 +100,7 @@ export class CallerInternal {
 	}
 	private limitPortByTotal(port: IRange2, total: Vec2) {
 		if (!(port as Range2).isZero && !total.equals( {x: -1, y: -1})) {
-			let overflow = (port as Range2).toRect().stop.subtract(total).max(new Vec2(0, 0));
+			let overflow = new Rect().fromRange2(port as Range2).stop.subtract(total).max(new Vec2(0, 0));
 			(port.size as Vec2).subtract(overflow);
 		}
 	}

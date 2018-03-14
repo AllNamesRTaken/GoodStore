@@ -8,8 +8,16 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceRoot}\\dist\\lib\\umd.js",
+            "program": "${workspaceRoot}\\dist\\lib\\index.js",
             "outFiles": []
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Perf",
+            "program": "${workspaceRoot}\\dist\\test\\Perf.js",
+            "outFiles": [],
+            "sourceMaps": true
         },
         {
             "type": "node",
@@ -22,6 +30,7 @@
         {
             "name": "Run mocha",
             "type": "node",
+            "request": "launch",
             /* Globally installed mocha */
             "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
             "stopOnEntry": false,

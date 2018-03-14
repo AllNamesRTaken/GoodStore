@@ -3,10 +3,7 @@ import {IDataCellDto} from "./Dto/IDataCellDto";
 import {IDataRowDto} from "./Dto/IDataRowDto";
 import {IDataStoreResponseDto} from "./Dto/IDataStoreResponseDto";
 
-import { Arr, Dictionary, Pool, Range2, Rect, Util, Vec2, IPoolable } from "goodcore";
-import { IRange2 } from "goodcore";
-import { IRect } from "goodcore";
-import { IVec2 } from "goodcore";
+import { Arr, Dictionary, Pool, Range2, Rect, Util, Vec2 } from "goodcore";
 import { CallerInternal } from "./CallerInternal";
 import { DataPage } from "./DataPage";
 import { IRange1 } from "./Dto/IRange1";
@@ -82,7 +79,7 @@ export class PageStore {
 		// Checks from all directions if some pages are loaded already 
 		// so that the pageRange requested can be made smaller
 		const result = pageRange.clone();
-		const pages = pageRange.toRect();
+		const pages = new Rect().fromRange2(pageRange);
 		let isNew = false;
 		// top to bottom
 		for (let i = pages.start.y; i < pages.stop.y; i += 1) {
@@ -182,15 +179,15 @@ export class PageStore {
 				(el.p > y2) ? 1 : 
 				0;
 		});
-		let pages = new Rect(pageX1, pageY1, pageX2, pageY2, true).toRange2();
+		let pages = new Range2().fromRect(new Rect(pageX1, pageY1, pageX2, pageY2, true));
 		return pages;
 	}
 	public cellRangeToPageRange(cells: IRange2): Range2 {
 		let pages = new Range2().set(cells);
-		const rect = pages.toRect(false, this._dummyRect).translate(this._pagesPerCell);
+		const rect = this._dummyRect.fromRange2(pages).translate(this._pagesPerCell);
 		rect.start.toInt();
 		rect.stop.ceil();
-		rect.toRange2(pages);
+		pages.fromRect(rect);
 		return pages;
 	}
 
@@ -228,7 +225,7 @@ export class PageStore {
 		);
 		let start = pages[0].r[indexY1].c[indexX1].i; 
 		let stop = pages[pages.length - 1].r[indexY2].c[indexX2].i; 
-		let result =  new Rect(start.x, start.y, stop.x, stop.y, true).toRange2();
+		let result =  new Range2().fromRect(new Rect(start.x, start.y, stop.x, stop.y, true));
 		return result;
 	}
 
@@ -259,7 +256,7 @@ export class PageStore {
 	public cleanPageStore(callers: CallerInternal[]) {
 		// Should skip locked pages by moving them to the top of the queue
 		let locked = this.calculateLockedPages(callers);
-		let retainCount = Math.max(this._retainSize, locked.list.count);
+		let retainCount = Math.max(this._retainSize, locked.values.length);
 		// Working on reversed _pageQueue so that we don't remove newly pushed first
 		Arr.reverse(this._pageQueue);
 		Arr.reverseUntil(this._pageQueue, 
@@ -289,7 +286,7 @@ export class PageStore {
 		}
 	}
 	private partitionDataIntoPages(data: IDataRowDto[], cellPort: IRange2, pxScope: IRect): DataPage[] {
-		const pageRect = this.cellRangeToPageRange(cellPort).toRect();
+		const pageRect = new Rect().fromRange2(this.cellRangeToPageRange(cellPort));
 		const result: DataPage[] = new Array<DataPage>();
 
 		let pageCountY = 0;
@@ -379,7 +376,7 @@ export class PageStore {
 			result.push(new DataRow(loadPort.size.x))
 		);
 		const dataPages = this.getDataPages(caller);
-		const loadRect = loadPort.toRect();
+		const loadRect = new Rect().fromRange2(loadPort);
 		const pageRange = this.cellRangeToPageRange(loadPort);
 		const viewSpace = new Vec2();
 		const modelSpace = new Vec2();

@@ -1,11 +1,11 @@
-import { Initable, Range2, IInitable } from "goodcore";
+import { Initable, Range2 } from "goodcore";
 
 @Initable
 export class DataStoreRequestDto implements IInitable<DataStoreRequestDto> {
-	public init(obj: Partial<DataStoreRequestDto>): DataStoreRequestDto {
+	init(obj: any, mapping?: any): this {
 		throw new Error("Method not implemented.");
 	}
-	public sourceId: string;
-	public requestId: number;
-	public cellRequest: Range2;
+	public sourceId: string = "";
+	public requestId: number = 0;
+	public cellRequest: Range2 = null;
 }

@@ -4,21 +4,19 @@ var rollup = require('rollup');
 var resolve = require('rollup-plugin-node-resolve');
 var commonjs = require('rollup-plugin-commonjs');
 var typescript = require('rollup-plugin-typescript');
-var babili = require('rollup-plugin-babel-minify');
+var babili = require('rollup-plugin-babili');
 var babel = require('rollup-plugin-babel');
 
 rollup.rollup({
-    input: 'src/lib/index.ts',
-    output: {
-        name: packageJson.name,
-        globals: {
-            // 'rxjs/Observable': 'Observable',
-            // 'rxjs/Subscription': 'Subscription',
-            // 'rxjs/BehaviorSubject': 'BehaviorSubject'
-        },
-        sourcemap: true,
-    },
+    entry: 'src/lib/index.ts',
+    moduleName: packageJson.name,
     // external: ['rxjs/Observable', 'rxjs/Subscription', 'rxjs/BehaviorSubject'],
+    sourceMap: true,
+    globals: {
+        // 'rxjs/Observable': 'Observable',
+        // 'rxjs/Subscription': 'Subscription',
+        // 'rxjs/BehaviorSubject': 'BehaviorSubject'
+    },
     treeshake: true,
     plugins: [
         typescript({
@@ -34,30 +32,24 @@ rollup.rollup({
 }).then(function (bundle) {
     bundle.write({
         format: 'iife',
-        output: {
-            name: packageJson.name,
-        },
-        file: 'dist/' + packageJson.name + '.iife.min.js'
+        moduleName: packageJson.name,
+        dest: 'dist/' + packageJson.name + '.iife.min.js'
     });
     bundle.write({
         format: 'umd',
-        output: {
-            name: packageJson.name,
-        },
-        file: 'dist/' + packageJson.name + '.umd.min.js'
+        moduleName: packageJson.name,
+        dest: 'dist/' + packageJson.name + '.umd.min.js'
     });
     bundle.write({
         format: 'es',
-        file: 'dist/' + packageJson.name + '.es.min.js'
+        dest: 'dist/' + packageJson.name + '.es.min.js'
     });
 });
 rollup.rollup({
-    input: 'src/lib/index.ts',
-    output: {
-        name: packageJson.name,
-        globals: {
-        },
-        sourcemap: true,
+    entry: 'src/lib/index.ts',
+    moduleName: packageJson.name,
+    sourceMap: true,
+    globals: {
     },
     treeshake: true,
     plugins: [
@@ -73,6 +65,6 @@ rollup.rollup({
 }).then(function (bundle) {
     bundle.write({
         format: 'es',
-        file: 'dist/' + packageJson.name + '.es2015.min.js'
+        dest: 'dist/' + packageJson.name + '.es2015.min.js'
     });
 });

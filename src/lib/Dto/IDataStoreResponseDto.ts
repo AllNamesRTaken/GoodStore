@@ -1,6 +1,3 @@
-import { IRange2 } from "goodcore";
-import { IRect } from "goodcore";
-import { IVec2 } from "goodcore";
 import { IDataRowDto } from "./IDataRowDto";
 import { IPageInfoDto } from "./IPageInfoDto";
 import { IRange1 } from "./IRange1";

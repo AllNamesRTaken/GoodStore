@@ -1,17 +1,19 @@
-import { Initable, Poolable, Vec2, IPoolable, IPool } from "goodcore";
-import { IVec2 } from "goodcore";
+import { Initable, Poolable, Vec2 } from "goodcore";
 import { IDataCellDto } from "./Dto/IDataCellDto";
 
 // This class is no longer in use
 // Instead we use the Dto in order to save objects
 @Poolable
 @Initable
-export class DataCell implements IDataCellDto, IPoolable {
-	public __pool__: IPool<IPoolable>;
-	public release(): void {
+export class DataCell implements IDataCellDto, IInitable<DataCell>, IPoolable {
+	__pool__: IPool<IPoolable>;
+	release(): void {
 		throw new Error("Method not implemented.");
 	}
-	public initPool(pool: IPool<IPoolable>): void {
+	initPool(pool: IPool<IPoolable>): void {
+		throw new Error("Method not implemented.");
+	}
+	init(obj: any, mapping?: any): this {
 		throw new Error("Method not implemented.");
 	}
 	public i: IVec2 = {x: 0, y: 0};

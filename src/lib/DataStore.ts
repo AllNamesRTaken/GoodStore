@@ -1,6 +1,4 @@
 import { Arr, Dictionary, Pool, Range2, Rect, Test, Timer, Util, Vec2 } from "goodcore";
-import { IRange2 } from "goodcore";
-import { IRect } from "goodcore";
 import { BehaviorSubject } from "rxjs/BehaviorSubject";
 import { Observable } from "rxjs/Observable";
 import { Subscription } from "rxjs/Subscription";
@@ -120,6 +118,7 @@ export class DataStore {
 		}
 		pageRequest = this._pageStore.limitPagesToLoad(pageRequest);
 		cellRequest = this._pageStore.pageRangeToCellRange(pageRequest);
+		let foo = new DataStoreRequestDto();
 		const result = new DataStoreRequestDto().init( {
 			sourceId: this._id,
 			requestId: this._requestCounter,
@@ -156,7 +155,7 @@ export class DataStore {
 	private calculatePxRangeFromCellRange(loadPort: Range2): Rect {
 		let result: Rect = new Rect();
 		const dataPages = this._pageStore.getDataPagesForCellPort(loadPort);
-		const loadRect = loadPort.toRect();
+		const loadRect = new Rect().fromRange2(loadPort);
 		let startPx: Vec2 = dataPages[0].pxScope.start.clone();
 		let stopPx: Vec2 = dataPages[dataPages.length - 1].pxScope.stop.clone();
 		let leftIndex = dataPages[0].r[0].c[0].i.x;
