@@ -8,8 +8,8 @@ export class DataStoreConsumable  implements IInitable<DataStoreConsumable> {
 	}
 	public totalCells: Vec2 = new Vec2();
 	public totalPx: Vec2 = new Vec2();
-	public loadPort: Range2 = null;
+	public loadPort: Range2|null = null;
 	public pxScope: Rect = new Rect();
-	public rows: DataRow[] = null;
+	public rows: DataRow[]|null = null;
 
 }

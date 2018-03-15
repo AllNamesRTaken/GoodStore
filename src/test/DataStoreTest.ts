@@ -37,26 +37,26 @@ describe("DataStore",
 					next: (v: DataStoreConsumable) => {
 						switch (req) {
 							case 1:
-								v.rows[0].c[2].d.should.equal(3, "cell 3 on row 1 should have data = 3");
-								v.loadPort.equals(new Range2(0, 0, 4, 2)).should.equal(true, "loadport should have correct value");
+								v.rows![0].c[2].d.should.equal(3, "cell 3 on row 1 should have data = 3");
+								v.loadPort!.equals(new Range2(0, 0, 4, 2)).should.equal(true, "loadport should have correct value");
 								v.pxScope.isZero.should.equal(true, "pxScope should be zero if no px to page lookup has been set in config");
 								v.totalCells.equals(new Vec2(4, 6)).should.equal(true, "totalCells should have correct value") ;
 								v.totalPx.isZero.should.equal(true, "totalPx should be zero if no px to page lookup has been set in config");
-								v.rows[0].h.should.equal(10);
-								v.rows[1].i.should.equal(1);
-								v.rows[0].d.should.equal("rowData");
-								v.rows[0].c[0].w.should.equal(10);
-								v.rows[1].c[1].i.x.should.equal(1);
-								v.rows[1].c[2].i.x.should.equal(2);
+								v.rows![0].h.should.equal(10);
+								v.rows![1].i.should.equal(1);
+								v.rows![0].d.should.equal("rowData");
+								v.rows![0].c[0].w.should.equal(10);
+								v.rows![1].c[1].i.x.should.equal(1);
+								v.rows![1].c[2].i.x.should.equal(2);
 								break;
 							case 2:
-								v.rows[1].c[2].d.should.equal(72);
+								v.rows![1].c[2].d.should.equal(72);
 								break;
 							case 3:
-								v.rows[1].c[2].d.should.equal(272);
+								v.rows![1].c[2].d.should.equal(272);
 								break;
 							case 4:
-								v.rows[1].c[2].d.should.equal(131);
+								v.rows![1].c[2].d.should.equal(131);
 								done();
 								break;
 						}
@@ -101,26 +101,26 @@ describe("DataStore",
 					next: (v: DataStoreConsumable) => {
 						switch (req) {
 							case 1:
-								v.rows[0].c[2].d.should.equal(3);
-								v.loadPort.equals(new Range2(0, 0, 4, 2)).should.be.true;
+								v.rows![0].c[2].d.should.equal(3);
+								v.loadPort!.equals(new Range2(0, 0, 4, 2)).should.be.true;
 								v.pxScope.equals(new Rect(0, 0, 39, 19)).should.be.true;
 								v.totalCells.equals(new Vec2(4, 6)).should.be.true;
 								v.totalPx.equals(new Vec2(200, 400)).should.be.true;
-								v.rows[0].h.should.equal(10);
-								v.rows[1].i.should.equal(1);
-								v.rows[0].d.should.equal("rowData");
-								v.rows[0].c[0].w.should.equal(10);
-								v.rows[1].c[1].i.x.should.equal(1);
-								v.rows[1].c[2].i.x.should.equal(2);
+								v.rows![0].h.should.equal(10);
+								v.rows![1].i.should.equal(1);
+								v.rows![0].d.should.equal("rowData");
+								v.rows![0].c[0].w.should.equal(10);
+								v.rows![1].c[1].i.x.should.equal(1);
+								v.rows![1].c[2].i.x.should.equal(2);
 								break;
 							case 2:
-								v.rows[1].c[2].d.should.equal(72);
+								v.rows![1].c[2].d.should.equal(72);
 								break;
 							case 3:
-								v.rows[1].c[2].d.should.equal(272);
+								v.rows![1].c[2].d.should.equal(272);
 								break;
 							case 4:
-								v.rows[1].c[2].d.should.equal(131);
+								v.rows![1].c[2].d.should.equal(131);
 								done();
 								break;
 						}
@@ -204,15 +204,15 @@ describe("DataStore",
 					next: (v: DataStoreConsumable) => {
 						switch (req) {
 							case 1:
-								v.rows[0].c[0].d.should.equal(1);
-								v.rows.length.should.equal(3);
-								v.rows[0].c.length.should.equal(3);
+								v.rows![0].c[0].d.should.equal(1);
+								v.rows!.length.should.equal(3);
+								v.rows![0].c.length.should.equal(3);
 								break;
 							case 2:
-								v.rows[0].c[0].d.should.equal(6);
-								v.rows.length.should.equal(3);
-								v.rows[0].c.length.should.equal(3);
-								v.rows[2].c[2].d.should.equal(82);
+								v.rows![0].c[0].d.should.equal(6);
+								v.rows!.length.should.equal(3);
+								v.rows![0].c.length.should.equal(3);
+								v.rows![2].c[2].d.should.equal(82);
 								done();
 								break;
 						}
@@ -321,8 +321,8 @@ describe("DataStore",
 				myStore.stream.subscribe({
 					next: (v: DataStoreConsumable) => {
 						if (req > 0) {
-							v.rows.length.should.equal(100);
-							v.rows[0].c.length.should.equal(100);
+							v.rows!.length.should.equal(100);
+							v.rows![0].c.length.should.equal(100);
 						}
 						++req;
 					}
@@ -360,8 +360,8 @@ describe("DataStore",
 				myStore.stream.subscribe({
 					next: (v: DataStoreConsumable) => {
 						if (req > 0) {
-							v.rows.length.should.equal(100);
-							v.rows[0].c.length.should.equal(100);
+							v.rows!.length.should.equal(100);
+							v.rows![0].c.length.should.equal(100);
 						}
 						++req;
 					}

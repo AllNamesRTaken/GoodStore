@@ -7,5 +7,5 @@ export class DataStoreRequestDto implements IInitable<DataStoreRequestDto> {
 	}
 	public sourceId: string = "";
 	public requestId: number = 0;
-	public cellRequest: Range2 = null;
+	public cellRequest: Range2|null = null;
 }

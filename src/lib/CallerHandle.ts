@@ -44,7 +44,7 @@ export class CallerHandle {
 	) {
 		this._id = id;
 		this._store = store;
-		this._stream = new BehaviorSubject<DataStoreConsumable>(null);
+		this._stream = new BehaviorSubject<DataStoreConsumable>(new DataStoreConsumable());
 		this._internal = new CallerInternal(config, this._stream);
 	}
 

@@ -8,30 +8,31 @@
 	    "moduleResolution": "node",
 	    "declaration": false,
 	    "noImplicitAny": true,
-		"noImplicitThis": false,
-		"strictNullChecks": true,
 	    "noResolve": false,
 	    "removeComments": true,
 	    "noLib": false,
-	    "preserveConstEnums": true,
-		"emitDecoratorMetadata": true,
+	    "emitDecoratorMetadata": true,
 	    "experimentalDecorators": true,
-	    "allowJs": false,
+	    "preserveConstEnums": true,
+		"allowJs": false,
 		"listFiles": false,
-		"downlevelIteration": true,
+		"listEmittedFiles": false,
 		"lib": [
-			"dom",
+            "dom",
 			"es5",
 			"es6",
             "es2015.promise",
 			"scripthost"
-        ]
+		],
+		"types": [
+			"node"
+		]
     },
 	"include": [
 		"./src/**/*.ts",
+		"./src/test/**/*.ts",
 		"./typings/**/*.d.ts"
 	],
 	"exclude": [
-		"./src/test/**/*.ts"
 	]
 }

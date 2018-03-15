@@ -7,12 +7,13 @@ import { Arr, Dictionary, Pool, Range2, Rect, Util, Vec2 } from "goodcore";
 import { CallerInternal } from "./CallerInternal";
 import { DataPage } from "./DataPage";
 import { IRange1 } from "./Dto/IRange1";
+import { isNotUndefined } from "goodcore/Test";
 
 export class PageStore {
 	private _pagePxRanges: {
 		x: IRange1[];
 		y: IRange1[];
-	};
+	} | null;
 	public isDebug: any = true;
 	private _pagePool: Pool<DataPage>;
 	private _pageLookup: Dictionary<DataPage>;
@@ -46,7 +47,7 @@ export class PageStore {
 		this._pagesPerCell.y = 1 / v.y;
 	}
 
-	constructor(pageSize: Vec2, retainSize: number, pagePxRanges: { x: IRange1[], y: IRange1[] } = null) {
+	constructor(pageSize: Vec2, retainSize: number, pagePxRanges: { x: IRange1[], y: IRange1[] } | null = null) {
 		this._pagePool = new Pool(DataPage);
 		this._pageLookup = new Dictionary<DataPage>();
 		this._requestedPages = new Dictionary<DataPage>();
@@ -154,27 +155,28 @@ export class PageStore {
 	}
 
 	public pxRangeToPageRange(pixels: IRange2): Range2 {
-		Util.assert(!!this._pagePxRanges.x && !! this._pagePxRanges.y, "pagePxRanges does not contain valid ranges");
+		Util.assert(this._pagePxRanges !== null, "PagePxRanges not initialized", this.isDebug);
+		Util.assert(!!this._pagePxRanges!.x && !! this._pagePxRanges!.y, "pagePxRanges does not contain valid ranges");
 		let x1 = pixels.pos.x;
-		let pageX1 = Arr.binarySearch<IRange1>(this._pagePxRanges.x, (el) => {
+		let pageX1 = Arr.binarySearch<IRange1>(this._pagePxRanges!.x, (el) => {
 			return (el.p + el.s <= x1) ? -1 : 
 				(el.p > x1) ? 1 : 
 				0;
 		});
 		let y1 = pixels.pos.y;
-		let pageY1 = Arr.binarySearch<IRange1>(this._pagePxRanges.y, (el) => {
+		let pageY1 = Arr.binarySearch<IRange1>(this._pagePxRanges!.y, (el) => {
 			return (el.p + el.s <= y1) ? -1 : 
 				(el.p > y1) ? 1 : 
 				0;
 		});
 		let x2 = pixels.pos.x + pixels.size.x - 1;
-		let pageX2 = Arr.binarySearch<IRange1>(this._pagePxRanges.x, (el) => {
+		let pageX2 = Arr.binarySearch<IRange1>(this._pagePxRanges!.x, (el) => {
 			return (el.p + el.s <= x2) ? -1 : 
 				(el.p > x2) ? 1 : 
 				0;
 		});
 		let y2 = pixels.pos.y + pixels.size.y - 1;
-		let pageY2 = Arr.binarySearch<IRange1>(this._pagePxRanges.y, (el) => {
+		let pageY2 = Arr.binarySearch<IRange1>(this._pagePxRanges!.y, (el) => {
 			return (el.p + el.s <= y2) ? -1 : 
 				(el.p > y2) ? 1 : 
 				0;
@@ -233,7 +235,7 @@ export class PageStore {
 		callers: CallerInternal[], 
 		payload: IDataStoreResponseDto
 	): void {
-		const pages: DataPage[] = this.partitionDataIntoPages(payload.r, payload.dataPort, payload.pxScope);
+		const pages: DataPage[] = this.partitionDataIntoPages(payload.r, payload.dataPort);
 		pages.forEach((p: DataPage) => this.insertPage(p)); // Number of pages should be very low. forEach is perhaps ok.
 		this.cleanPageStore(callers); // Remove pages that are too old
 	}
@@ -243,7 +245,8 @@ export class PageStore {
 			this._totalPages.set(payload.totalCells).scale(this._pagesPerCell);
 			this._totalCells.set(payload.totalCells);
 			if (this._usePx) {
-				this._totalPx.set(payload.totalPx);
+				Util.assert(payload.totalPx !== undefined, "totalPx should be set when _usePx is true", this.isDebug);
+				this._totalPx.set(payload.totalPx!);
 			}
 		}
 	}
@@ -276,8 +279,10 @@ export class PageStore {
 	}
 	private shiftPageQueue(): void {
 		const toRemove = this._pageQueue.shift();
-		this.deletePageById(toRemove.id);
-		toRemove.release();
+		if (isNotUndefined(toRemove)) {
+			this.deletePageById(toRemove!.id);
+			toRemove!.release();
+		}
 	}
 	private deletePageById(pageId: number): void {
 		const exists = this._pageLookup.has(pageId);
@@ -285,7 +290,7 @@ export class PageStore {
 			this._pageLookup.delete(pageId);
 		}
 	}
-	private partitionDataIntoPages(data: IDataRowDto[], cellPort: IRange2, pxScope: IRect): DataPage[] {
+	private partitionDataIntoPages(data: IDataRowDto[], cellPort: IRange2): DataPage[] {
 		const pageRect = new Rect().fromRange2(this.cellRangeToPageRange(cellPort));
 		const result: DataPage[] = new Array<DataPage>();
 
@@ -301,8 +306,9 @@ export class PageStore {
 					dataPage.id = id;
 					dataPage.cellSize = this._cellsPerPage;
 					if (this._usePx) {
-						let pagePxX = this._pagePxRanges.x[pageX];
-						let pagePxY = this._pagePxRanges.y[pageY];
+						Util.assert(this._pagePxRanges !== null, "PagePxRanges not initialized but using px", this.isDebug);
+						let pagePxX = this._pagePxRanges!.x[pageX];
+						let pagePxY = this._pagePxRanges!.y[pageY];
 						// Replaced Init for GC reasons
 						let pagePxScope = dataPage.pxScope;
 						pagePxScope.start.x = pagePxX.p;
@@ -430,7 +436,7 @@ export class PageStore {
 		pages.forEach((p) => {
 			const pos = p.y * this._cellsPerPage.x + p.x;
 			if (this._pageLookup.has(pos)) {
-				result.push(this._pageLookup.get(pos).id);
+				result.push(this._pageLookup.get(pos)!.id);
 			}
 			return false;
 		});
@@ -461,7 +467,7 @@ export class PageStore {
 		pages.forEach((p) => {
 			const pos = p.y * this._totalPages.x + p.x;
 			if (this._pageLookup.has(pos)) {
-				result.push(this._pageLookup.get(pos));
+				result.push(this._pageLookup.get(pos)!);
 			}
 			return false;
 		});

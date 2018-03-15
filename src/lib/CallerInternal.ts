@@ -11,7 +11,7 @@ export class CallerInternal {
 	private _fixedLoadPort: Range2 = new Range2();
 	private _fixedPxLoadPort: Range2 = new Range2();
 	public ignoreFetch: number;
-	public fetchSubscription: Subscription;
+	public fetchSubscription: Subscription | null;
 	public requestId: number;
 	public totalCells: Vec2 = new Vec2(-1, -1);
 	public totalPx: Vec2 = new Vec2(-1, -1);

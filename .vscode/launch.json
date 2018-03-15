@@ -36,6 +36,8 @@
             "stopOnEntry": false,
             /* Specify which are the file you want the runner to pick up. */
             "args": [
+                "-r",
+                "@std/esm",
                 "dist/test/**/*.js"
             ],
             "cwd": "${workspaceRoot}/",

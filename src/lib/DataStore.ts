@@ -25,16 +25,16 @@ export class DataStore {
 
 	private _id: string = Util.newUUID();
 
-	private _endPointFn: (payload: DataStoreRequestDto) => Observable<any>; // where we get the data
+	private _endPointFn: ((payload: DataStoreRequestDto) => Observable<any>) | null; // where we get the data
 	private _usePx: boolean = true;
 	private _requestCounter: number = 0; // how many outstand
 	private _handleCounter: number = 0;
 	private _callers: CallerInternal[] = [];
-	private _pageStore: PageStore = null;
+	private _pageStore: PageStore | null = null;
 	constructor(config: IDataStoreConfig) {
 		this._endPointFn = config.endPointFn ? config.endPointFn : DataStore.DEFAULT_CONFIG.endPointFn;
 		this._pageStore = new PageStore(
-			config.pageSize || DataStore.DEFAULT_CONFIG.pageSize,
+			config.pageSize! || DataStore.DEFAULT_CONFIG.pageSize,
 			config.retainSize ? config.retainSize : DataStore.DEFAULT_CONFIG.retainSize,
 			config.pagePxRanges
 		);
@@ -46,22 +46,24 @@ export class DataStore {
 	public load(caller: CallerInternal, force: boolean = false): void {
 		Util.assert(Test.isFunction(this._endPointFn), "EndPoint is valid function", this.isDebug);
 		Util.assert(caller.viewPort !== undefined, "ViewPort is defined", this.isDebug);
+		Util.assert(this._pageStore !== null, "PageStore is not initialized", this.isDebug);
 
 		if (this.loadPortHasChanged(caller) || force) {
 			caller.limitLoadPortByTotalCells();
 			caller.limitPxLoadPortByTotalPx();
-			if (this._pageStore.isRequestedDataLoaded(caller)) {
+			if (this._pageStore!.isRequestedDataLoaded(caller)) {
 				this.addDataToStream(caller, force);
-				this._pageStore.cleanPageStore(this._callers); // Remove pages that are too old
+				this._pageStore!.cleanPageStore(this._callers); // Remove pages that are too old
 
 			} else {
 				caller.fetchSubscription = this.fetchData(caller).subscribe(
 					(value: IDataStoreResponseDto) => {
-						if (!Util.assert(value !== undefined, "Payload from server was empty in DataStore.load()", this.isDebug)) { return; }
+						let kosher = Util.assert(value !== undefined, "Payload from server was empty in DataStore.load()", this.isDebug);
+						if (!kosher)  { return; }
 						this.readPropertiesFromResponse(caller, value);
 						caller.limitLoadPortByTotalCells();
 						caller.limitPxLoadPortByTotalPx();
-						this._pageStore.addDataToPageStore(this._callers, value);
+						this._pageStore!.addDataToPageStore(this._callers, value);
 						if (caller.ignoreFetch < caller.requestId) {
 							this.addDataToStream(caller, force);
 						}
@@ -84,12 +86,12 @@ export class DataStore {
 		caller.totalCells = new Vec2().set(value.totalCells);
 		this._usePx = !!value.pxScope;
 		if (this._usePx) {
-			caller.totalPx.set(value.totalPx);
+			caller.totalPx.set(value.totalPx!);
 		}
 		if (value.cellsPerPage) {
-			this._pageStore.setPageSize(value.cellsPerPage);
+			this._pageStore!.setPageSize(value.cellsPerPage);
 		}
-		this._pageStore.readPropertiesFromResponse(value);
+		this._pageStore!.readPropertiesFromResponse(value);
 
 	}
 	public register(config: RequestConfig): CallerHandle {
@@ -100,24 +102,26 @@ export class DataStore {
 	}
 
 	private fetchData(caller: CallerInternal): Observable<any> {
+		Util.assert(this._endPointFn !== null, "EndPointFn not set", this.isDebug);
 		const dto = this.createRequestDTO(caller);
 		caller.requestId = this._requestCounter;
 		let data: any;
 		caller.cancelOngoingFetch();
-		return this._endPointFn(dto);
+		return this._endPointFn!(dto);
 	}
 
 	private createRequestDTO(caller: CallerInternal): DataStoreRequestDto {
-		let pxRequest: Range2 = null;
-		let cellRequest: Range2 = null;
-		let pageRequest: Range2 = null;
+		Util.assert(this._pageStore !== null, "PageStore not initialized", this.isDebug);
+		let pxRequest: Range2|null = null;
+		let cellRequest: Range2|null = null;
+		let pageRequest: Range2|null = null;
 		if (!caller.pxViewPort.isZero) {
-			pageRequest = this._pageStore.pxRangeToPageRange(caller.pxLoadPort);
+			pageRequest = this._pageStore!.pxRangeToPageRange(caller.pxLoadPort);
 		} else {
-			pageRequest = this._pageStore.cellRangeToPageRange(caller.loadPort);
+			pageRequest = this._pageStore!.cellRangeToPageRange(caller.loadPort);
 		}
-		pageRequest = this._pageStore.limitPagesToLoad(pageRequest);
-		cellRequest = this._pageStore.pageRangeToCellRange(pageRequest);
+		pageRequest = this._pageStore!.limitPagesToLoad(pageRequest);
+		cellRequest = this._pageStore!.pageRangeToCellRange(pageRequest);
 		let foo = new DataStoreRequestDto();
 		const result = new DataStoreRequestDto().init( {
 			sourceId: this._id,
@@ -133,16 +137,17 @@ export class DataStore {
 	}
 
 	private addDataToStream(caller: CallerInternal, force: boolean = false): void {
+		Util.assert(this._pageStore !== null, "PageStore not initialized", this.isDebug);
 		if (!this.viewPortIsAlreadyStreamed(caller) || force) {
 			caller.fixLoadPort();
-			const loadPort = this._pageStore.getLoadPort(caller);
-			const rows: DataRow[] = this._pageStore.assembleDataFromPages(caller);
+			const loadPort = this._pageStore!.getLoadPort(caller);
+			const rows: DataRow[] = this._pageStore!.assembleDataFromPages(caller);
 			let pxScope = null;
 			if (this._usePx) {
 				pxScope = this.calculatePxRangeFromCellRange(loadPort);
 			}
 			let result = new DataStoreConsumable();
-			result.init( { totalCells: this._pageStore.totalCells, totalPx: this._pageStore.totalPx, loadPort, rows, pxScope } );
+			result.init( { totalCells: this._pageStore!.totalCells, totalPx: this._pageStore!.totalPx, loadPort, rows, pxScope } );
 			caller.stream.next(result);
 		}
 	}
@@ -153,8 +158,9 @@ export class DataStore {
 	} 
 
 	private calculatePxRangeFromCellRange(loadPort: Range2): Rect {
+		Util.assert(this._pageStore !== null, "PageStore not initialized", this.isDebug);
 		let result: Rect = new Rect();
-		const dataPages = this._pageStore.getDataPagesForCellPort(loadPort);
+		const dataPages = this._pageStore!.getDataPagesForCellPort(loadPort);
 		const loadRect = new Rect().fromRange2(loadPort);
 		let startPx: Vec2 = dataPages[0].pxScope.start.clone();
 		let stopPx: Vec2 = dataPages[dataPages.length - 1].pxScope.stop.clone();
