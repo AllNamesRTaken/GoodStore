@@ -18,7 +18,7 @@ import { RequestConfig } from "./RequestConfig";
 export class DataStore {
 	public static DEFAULT_CONFIG: IDataStoreConfig = {
 		pageSize: new Vec2(10, 10),
-		retainSize: 10,
+		retainSize: Number.POSITIVE_INFINITY,
 		endPointFn: null
 	};
 	public isDebug = true;
@@ -35,7 +35,7 @@ export class DataStore {
 		this._endPointFn = config.endPointFn ? config.endPointFn : DataStore.DEFAULT_CONFIG.endPointFn;
 		this._pageStore = new PageStore(
 			config.pageSize! || DataStore.DEFAULT_CONFIG.pageSize,
-			config.retainSize ? config.retainSize : DataStore.DEFAULT_CONFIG.retainSize,
+			config.retainSize ? config.retainSize! : DataStore.DEFAULT_CONFIG.retainSize!,
 			config.pagePxRanges
 		);
 	}
