@@ -33,7 +33,7 @@ interface IDataStoreResponseDto {
 }
 interface IDataStoreConfig {
 	pageSize?: Vec2;
-	retainSize: number; 
+	retainSize?: number; 
 	endPointFn: (payload: any) => Observable<any>;
 	pagePxRanges?: { x: IRange1[], y: IRange1[] };
 }
