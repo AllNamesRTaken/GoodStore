@@ -37,7 +37,8 @@ gulp.task("build-es6", async function () {
                 ]
             }),
             uglify({}, es.minify)
-        ]
+        ],
+        external: ['goodcore', 'rxjs']
     });
 
     await bundle.write({
@@ -67,7 +68,8 @@ gulp.task("build-es5", async function () {
                 ]
             }),
             uglify({}, es.minify)
-        ]
+        ],
+        external: ['goodcore', 'rxjs']
     });
 
     await bundle.write({
