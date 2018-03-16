@@ -1,6 +1,6 @@
 {
   "name": "goodstore",
-  "version": "0.1.4",
+  "version": "0.1.7",
   "description": "A Datastore module that abstracts the loading of data from the usage of data",
   "main": "goodstore.es5.umd.min.js",
   "module": "index.js",
@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "es6-promise": "^4.2.4",
-    "goodcore": "^0.16.9",
+    "goodcore": "^0.16.12",
     "rxjs": "^5.5.7"
   },
   "devDependencies": {

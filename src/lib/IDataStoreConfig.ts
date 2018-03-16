@@ -1,5 +1,5 @@
 import { Vec2 } from "goodcore";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { IRange1 } from "./Dto/IRange1";
 
 export interface IDataStoreConfig {

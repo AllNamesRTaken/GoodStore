@@ -1,5 +1,5 @@
 import { Range2, Vec2 } from "goodcore";
-import { BehaviorSubject } from "rxjs/BehaviorSubject";
+import { BehaviorSubject } from "rxjs";
 import { CallerInternal } from "./CallerInternal";
 import { DataStore } from "./DataStore";
 import { DataStoreConsumable } from "./DataStoreConsumable";

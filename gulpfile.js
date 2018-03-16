@@ -29,16 +29,9 @@ gulp.task("build-es6", async function () {
         input: './dist/lib/index.js',
         plugins: [
             resolve({ jsnext: true }),
-            commonjs({
-                include: [
-                    'node_modules/rxjs/*.js',
-                    'node_modules/rxjs/util/**',
-                    'node_modules/rxjs/symbol/*.js',
-                ]
-            }),
             uglify({}, es.minify)
         ],
-        external: ['goodcore', 'rxjs']
+        external: ['goodcore', 'rxjs'],
     });
 
     await bundle.write({
@@ -60,13 +53,6 @@ gulp.task("build-es5", async function () {
         input: './dist/lib/index.js',
         plugins: [
             resolve({ jsnext: true }),
-            commonjs({
-                include: [
-                    'node_modules/rxjs/*.js',                    
-                    'node_modules/rxjs/util/**',
-                    'node_modules/rxjs/symbol/*.js',
-                ]
-            }),
             uglify({}, es.minify)
         ],
         external: ['goodcore', 'rxjs']

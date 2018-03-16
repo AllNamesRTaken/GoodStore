@@ -1,7 +1,7 @@
 import { Arr, Dictionary, Pool, Range2, Rect, Test, Timer, Util, Vec2 } from "goodcore";
-import { BehaviorSubject } from "rxjs/BehaviorSubject";
-import { Observable } from "rxjs/Observable";
-import { Subscription } from "rxjs/Subscription";
+import { BehaviorSubject } from "rxjs";
+import { Observable } from "rxjs";
+import { Subscription } from "rxjs";
 import { CallerHandle } from "./CallerHandle";
 import { CallerInternal } from "./CallerInternal";
 import { DataPage, IDataPageDictionary } from "./DataPage";

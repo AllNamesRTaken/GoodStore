@@ -1,6 +1,6 @@
 import { Rect, Range2, Vec2 } from "goodcore";
-import { BehaviorSubject } from "rxjs/BehaviorSubject";
-import { Subscription } from "rxjs/Subscription";
+import { BehaviorSubject } from "rxjs";
+import { Subscription } from "rxjs";
 import { DataStoreConsumable } from "./DataStoreConsumable";
 import { IRequestConfig } from "./IRequestConfig";
 import { RequestConfig } from "./RequestConfig";
