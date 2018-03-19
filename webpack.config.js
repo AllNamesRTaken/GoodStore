@@ -38,9 +38,9 @@ module.exports = (envOptions) => {
         // context: source,
         output: {
             path: destination,
-            filename: package.name + ".bundle.js",
-            chunkFilename: package.name + ".chunk.js",
-            library: package.name,
+            filename: "[name].bundle.js",
+            chunkFilename: "[name].chunk.js",
+            library: "[name]",
             libraryTarget: "umd"
         },
         resolve: {
