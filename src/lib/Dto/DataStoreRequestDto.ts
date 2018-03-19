@@ -1,4 +1,6 @@
-import { Initable, Range2 } from "goodcore";
+import { Range2 } from "goodcore/struct/Range2";
+import { Initable } from "goodcore/standard/mixins/Initable";
+
 
 @Initable
 export class DataStoreRequestDto implements IInitable<DataStoreRequestDto> {

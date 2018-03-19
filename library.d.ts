@@ -1,7 +1,7 @@
 import { Range2, Rect, Vec2 } from "goodcore";
-import { Observable } from "rxjs";
-import { BehaviorSubject } from "rxjs";
-import { Subscription } from "rxjs";
+import { BehaviorSubject } from "rxjs/BehaviorSubject";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
 
 interface IRange1 {
     p: number; // start pixel position

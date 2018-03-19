@@ -1,4 +1,6 @@
-import { Range2, Vec2 } from "goodcore";
+import { Range2 } from "goodcore/struct/Range2";
+import { Vec2 } from "goodcore/struct/Vec2";
+
 
 export interface IRequestConfig {
 	viewPort?: Range2;

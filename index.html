@@ -1,0 +1,75 @@
+<html>
+
+<head>
+    <title>Goodcore Test Page</title>
+</head>
+
+<body>
+    <script src="./node_modules/goodcore/goodcore.bundle.js"></script>
+    <script src="./node_modules/rxjs/bundles/Rx.min.js"></script>
+    <script src="./dist/lib/goodstore.bundle.js"></script>
+    <script>
+        goodcore.integrate();
+
+        mocDataResult1 = [
+            {
+                totalPx: { x: 200, y: 400 },
+                pxScope: { start: { x: 0, y: 0 }, stop: { x: 39, y: 19 } },
+                totalCells: { x: 4, y: 6 },
+                dataPort: { pos: { x: 0, y: 0 }, size: { x: 4, y: 2 } },
+                r: [
+                    {
+                        i: 0, h: 10, d: "rowData", c: [
+                            { i: { x: 0, y: 0 }, w: 10, d: 1 },
+                            { i: { x: 1, y: 0 }, w: 10, d: 2 },
+                            { i: { x: 2, y: 0 }, w: 10, d: 3 },
+                            { i: { x: 3, y: 0 }, w: 10, d: 4 }
+                        ],
+                    },
+                    {
+                        i: 1, h: 10, d: "rowData", c: [
+                            { i: { x: 0, y: 1 }, w: 10, d: 5 },
+                            { i: { x: 1, y: 1 }, w: 10, d: 6 },
+                            { i: { x: 2, y: 1 }, w: 10, d: 7 },
+                            { i: { x: 3, y: 1 }, w: 10, d: 8 }
+                        ],
+                    }
+                ],
+                cellsPerPage: { x: 2, y: 2 }
+            }];
+
+        let mocDataResult = Arr.shallowCopy(mocDataResult1);
+
+        let dsc = {
+            pageSize: new Vec2(2, 2),
+            retainSize: 4,
+            endPointFn: (payload) => {
+                let result = new Rx.Observable((observable) => {
+                    observable.next(mocDataResult.shift());
+                });
+                return result;
+            }
+        };
+
+        let ds = new goodstore.DataStore(dsc);
+
+        let handle = ds.register(new goodstore.RequestConfig());
+
+        let req = 0;
+        handle.stream.subscribe({
+            next: (v) => {
+                if (req === 1) {
+                    console.log(v);
+                }
+                req++;
+            }
+        });
+
+        //Test
+        let viewPort = new Range2(0, 0, 4, 2);
+        handle.load({ viewPort });
+    </script>
+    <H1>GoodCore library is loaded</H1>
+</body>
+
+</html>

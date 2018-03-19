@@ -25,7 +25,9 @@
 			"scripthost"
 		],
 		"types": [
-			"node"
+			"node",
+			"mocha",
+			"goodcore"
 		]
     },
 	"include": [

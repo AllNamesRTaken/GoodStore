@@ -1,7 +1,15 @@
-import { Arr, Dictionary, Pool, Range2, Rect, Test, Timer, Util, Vec2 } from "goodcore";
-import { BehaviorSubject } from "rxjs";
-import { Observable } from "rxjs";
-import { Subscription } from "rxjs";
+import { Range2 } from "goodcore/struct/Range2";
+import { Rect } from "goodcore/struct/Rect";
+import { Vec2 } from "goodcore/struct/Vec2";
+import { Dictionary } from "goodcore/struct/Dictionary";
+import { Pool } from "goodcore/standard/Pool";
+import { Timer } from "goodcore/Timer";
+import { until, reverse, shallowCopy } from "goodcore/Arr";
+import { isFunction } from "goodcore/Test";
+import { newUUID, assert } from "goodcore/Util";
+import { BehaviorSubject } from "rxjs/BehaviorSubject";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
 import { CallerHandle } from "./CallerHandle";
 import { CallerInternal } from "./CallerInternal";
 import { DataPage, IDataPageDictionary } from "./DataPage";
@@ -23,7 +31,7 @@ export class DataStore {
 	};
 	public isDebug = true;
 
-	private _id: string = Util.newUUID();
+	private _id: string = newUUID();
 
 	private _endPointFn: ((payload: DataStoreRequestDto) => Observable<any>) | null; // where we get the data
 	private _usePx: boolean = true;
@@ -44,9 +52,9 @@ export class DataStore {
 // fetches new data if the loadport is outside loaded datapages or if the force flag i true
 // re-fixate the loadport and streams new data to the consumer if the viewport is outside the current fixedloadport
 	public load(caller: CallerInternal, force: boolean = false): void {
-		Util.assert(Test.isFunction(this._endPointFn), "EndPoint is valid function", this.isDebug);
-		Util.assert(caller.viewPort !== undefined, "ViewPort is defined", this.isDebug);
-		Util.assert(this._pageStore !== null, "PageStore is not initialized", this.isDebug);
+		assert(isFunction(this._endPointFn), "EndPoint is valid function", this.isDebug);
+		assert(caller.viewPort !== undefined, "ViewPort is defined", this.isDebug);
+		assert(this._pageStore !== null, "PageStore is not initialized", this.isDebug);
 
 		if (this.loadPortHasChanged(caller) || force) {
 			caller.limitLoadPortByTotalCells();
@@ -58,7 +66,7 @@ export class DataStore {
 			} else {
 				caller.fetchSubscription = this.fetchData(caller).subscribe(
 					(value: IDataStoreResponseDto) => {
-						let kosher = Util.assert(value !== undefined, "Payload from server was empty in DataStore.load()", this.isDebug);
+						let kosher = assert(value !== undefined, "Payload from server was empty in DataStore.load()", this.isDebug);
 						if (!kosher)  { return; }
 						this.readPropertiesFromResponse(caller, value);
 						caller.limitLoadPortByTotalCells();
@@ -102,7 +110,7 @@ export class DataStore {
 	}
 
 	private fetchData(caller: CallerInternal): Observable<any> {
-		Util.assert(this._endPointFn !== null, "EndPointFn not set", this.isDebug);
+		assert(this._endPointFn !== null, "EndPointFn not set", this.isDebug);
 		const dto = this.createRequestDTO(caller);
 		caller.requestId = this._requestCounter;
 		let data: any;
@@ -111,7 +119,7 @@ export class DataStore {
 	}
 
 	private createRequestDTO(caller: CallerInternal): DataStoreRequestDto {
-		Util.assert(this._pageStore !== null, "PageStore not initialized", this.isDebug);
+		assert(this._pageStore !== null, "PageStore not initialized", this.isDebug);
 		let pxRequest: Range2|null = null;
 		let cellRequest: Range2|null = null;
 		let pageRequest: Range2|null = null;
@@ -137,7 +145,7 @@ export class DataStore {
 	}
 
 	private addDataToStream(caller: CallerInternal, force: boolean = false): void {
-		Util.assert(this._pageStore !== null, "PageStore not initialized", this.isDebug);
+		assert(this._pageStore !== null, "PageStore not initialized", this.isDebug);
 		if (!this.viewPortIsAlreadyStreamed(caller) || force) {
 			caller.fixLoadPort();
 			const loadPort = this._pageStore!.getLoadPort(caller);
@@ -158,7 +166,7 @@ export class DataStore {
 	} 
 
 	private calculatePxRangeFromCellRange(loadPort: Range2): Rect {
-		Util.assert(this._pageStore !== null, "PageStore not initialized", this.isDebug);
+		assert(this._pageStore !== null, "PageStore not initialized", this.isDebug);
 		let result: Rect = new Rect();
 		const dataPages = this._pageStore!.getDataPagesForCellPort(loadPort);
 		const loadRect = new Rect().fromRange2(loadPort);
@@ -169,23 +177,23 @@ export class DataStore {
 		let topIndex = dataPages[0].r[0].i;
 		let bottomIndex = dataPages[dataPages.length - 1].r[dataPages[dataPages.length - 1].r.length - 1].i;
 
-		let cells = Arr.shallowCopy(dataPages[0].r[0].c);
+		let cells = shallowCopy(dataPages[0].r[0].c);
 		// left and right
-		Arr.until(cells, 
+		until(cells, 
 			(cell, i) => i + leftIndex >= loadRect.start.x, 
 			(cell, i) => startPx.x += cell.w );
-		Arr.reverse(cells);
-		Arr.until(cells, 
+		reverse(cells);
+		until(cells, 
 			(cell, i) => rightIndex - i >= loadRect.start.x, 
 			(cell, i) => stopPx.x -= cell.w );
 
 		// top and bottom
-		let rows = Arr.shallowCopy(dataPages[0].r);
-		Arr.until(rows, 
+		let rows = shallowCopy(dataPages[0].r);
+		until(rows, 
 			(row, i) => i + topIndex >= loadRect.start.y, 
 			(row, i) => startPx.y += row.h );
-		Arr.reverse(rows);
-		Arr.until(rows, 
+		reverse(rows);
+		until(rows, 
 			(row, i) => rightIndex - i >= loadRect.start.y, 
 			(row, i) => stopPx.y -= row.h );
 

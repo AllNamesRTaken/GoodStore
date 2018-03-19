@@ -1,4 +1,7 @@
-import { Initable, Range2, Vec2 } from "goodcore";
+import { Range2 } from "goodcore/struct/Range2";
+import { Initable } from "goodcore/standard/mixins/Initable";
+import { Vec2 } from "goodcore/struct/Vec2";
+
 import { IRequestConfig } from "./IRequestConfig";
 
 @Initable

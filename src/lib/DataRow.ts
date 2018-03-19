@@ -1,4 +1,5 @@
-import { Initable, Poolable } from "goodcore";
+import { Initable } from "goodcore/standard/mixins/Initable";
+import { Poolable } from "goodcore/standard/mixins/Poolable";
 import { IDataCellDto } from "./Dto/IDataCellDto";
 import { IDataRowDto } from "./Dto/IDataRowDto";
 

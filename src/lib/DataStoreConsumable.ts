@@ -1,4 +1,7 @@
-import { Initable, Range2, Rect, Vec2 } from "goodcore";
+import { Range2 } from "goodcore/struct/Range2";
+import { Rect } from "goodcore/struct/Rect";
+import { Vec2 } from "goodcore/struct/Vec2";
+import { Initable } from "goodcore/standard/mixins/Initable";
 import { DataRow } from "./DataRow";
 
 @Initable

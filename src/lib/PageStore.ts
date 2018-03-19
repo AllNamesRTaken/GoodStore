@@ -3,7 +3,15 @@ import {IDataCellDto} from "./Dto/IDataCellDto";
 import {IDataRowDto} from "./Dto/IDataRowDto";
 import {IDataStoreResponseDto} from "./Dto/IDataStoreResponseDto";
 
-import { Arr, Dictionary, Pool, Range2, Rect, Util, Vec2 } from "goodcore";
+import { Range2 } from "goodcore/struct/Range2";
+import { Rect } from "goodcore/struct/Rect";
+import { Vec2 } from "goodcore/struct/Vec2";
+import { Dictionary } from "goodcore/struct/Dictionary";
+import { Pool } from "goodcore/standard/Pool";
+import { Timer } from "goodcore/Timer";
+import { until, reverse, reverseUntil, binarySearch, remove, removeOneByFn, forEach, flatten, map } from "goodcore/Arr";
+import { loop, assert } from "goodcore/Util";
+
 import { CallerInternal } from "./CallerInternal";
 import { DataPage } from "./DataPage";
 import { IRange1 } from "./Dto/IRange1";
@@ -155,28 +163,28 @@ export class PageStore {
 	}
 
 	public pxRangeToPageRange(pixels: IRange2): Range2 {
-		Util.assert(this._pagePxRanges !== null, "PagePxRanges not initialized", this.isDebug);
-		Util.assert(!!this._pagePxRanges!.x && !! this._pagePxRanges!.y, "pagePxRanges does not contain valid ranges");
+		assert(this._pagePxRanges !== null, "PagePxRanges not initialized", this.isDebug);
+		assert(!!this._pagePxRanges!.x && !! this._pagePxRanges!.y, "pagePxRanges does not contain valid ranges");
 		let x1 = pixels.pos.x;
-		let pageX1 = Arr.binarySearch<IRange1>(this._pagePxRanges!.x, (el) => {
+		let pageX1 = binarySearch<IRange1>(this._pagePxRanges!.x, (el) => {
 			return (el.p + el.s <= x1) ? -1 : 
 				(el.p > x1) ? 1 : 
 				0;
 		});
 		let y1 = pixels.pos.y;
-		let pageY1 = Arr.binarySearch<IRange1>(this._pagePxRanges!.y, (el) => {
+		let pageY1 = binarySearch<IRange1>(this._pagePxRanges!.y, (el) => {
 			return (el.p + el.s <= y1) ? -1 : 
 				(el.p > y1) ? 1 : 
 				0;
 		});
 		let x2 = pixels.pos.x + pixels.size.x - 1;
-		let pageX2 = Arr.binarySearch<IRange1>(this._pagePxRanges!.x, (el) => {
+		let pageX2 = binarySearch<IRange1>(this._pagePxRanges!.x, (el) => {
 			return (el.p + el.s <= x2) ? -1 : 
 				(el.p > x2) ? 1 : 
 				0;
 		});
 		let y2 = pixels.pos.y + pixels.size.y - 1;
-		let pageY2 = Arr.binarySearch<IRange1>(this._pagePxRanges!.y, (el) => {
+		let pageY2 = binarySearch<IRange1>(this._pagePxRanges!.y, (el) => {
 			return (el.p + el.s <= y2) ? -1 : 
 				(el.p > y2) ? 1 : 
 				0;
@@ -204,24 +212,24 @@ export class PageStore {
 		// First page first
 		let pos = pages[0].pxScope.start.clone();
 		let indexX1 = 0;
-		Arr.until<IDataCellDto>(pages[0].r[0].c, 
+		until<IDataCellDto>(pages[0].r[0].c, 
 			(el, i) => pixels.pos.x < pos.x + el.w, 
 			(el, i) => { pos.x += el.w; ++indexX1; }
 		);
 		let indexY1 = 0;
-		Arr.until<DataRow>(pages[0].r, 
+		until<DataRow>(pages[0].r, 
 			(el, i) => pixels.pos.y < pos.y + el.h, 
 			(el, i) => { pos.y += el.h; ++indexY1; }
 		);
 		// Last page second
 		pos = pages[pages.length - 1].pxScope.start.clone();
 		let indexX2 = 0;
-		Arr.until<IDataCellDto>(pages[pages.length - 1].r[0].c, 
+		until<IDataCellDto>(pages[pages.length - 1].r[0].c, 
 			(el, i) => pixels.pos.x + pixels.size.x - 1 < pos.x + el.w, 
 			(el, i) => { pos.x += el.w; ++indexX2; }
 		);
 		let indexY2 = 0;
-		Arr.until<DataRow>(pages[pages.length - 1].r, 
+		until<DataRow>(pages[pages.length - 1].r, 
 			(el, i) => pixels.pos.y + pixels.size.y - 1 < pos.y + el.h, 
 			(el, i) => { pos.y += el.h; ++indexY2; }
 		);
@@ -245,7 +253,7 @@ export class PageStore {
 			this._totalPages.set(payload.totalCells).scale(this._pagesPerCell);
 			this._totalCells.set(payload.totalCells);
 			if (this._usePx) {
-				Util.assert(payload.totalPx !== undefined, "totalPx should be set when _usePx is true", this.isDebug);
+				assert(payload.totalPx !== undefined, "totalPx should be set when _usePx is true", this.isDebug);
 				this._totalPx.set(payload.totalPx!);
 			}
 		}
@@ -261,8 +269,8 @@ export class PageStore {
 		let locked = this.calculateLockedPages(callers);
 		let retainCount = Math.max(this._retainSize, locked.values.length);
 		// Working on reversed _pageQueue so that we don't remove newly pushed first
-		Arr.reverse(this._pageQueue);
-		Arr.reverseUntil(this._pageQueue, 
+		reverse(this._pageQueue);
+		reverseUntil(this._pageQueue, 
 			(el, i) => this._pageQueue.length <= retainCount, 
 			(el, i) => {
 				if (!locked.has("" + this._pageQueue[i].id)) {
@@ -270,10 +278,10 @@ export class PageStore {
 				}
 			}
 		);
-		Arr.reverse(this._pageQueue);
+		reverse(this._pageQueue);
 	}
 	private removePageFromQueue(page: DataPage): void {
-		Arr.remove(this._pageQueue, page);
+		remove(this._pageQueue, page);
 		this.deletePageById(page.id);
 		page.release();
 	}
@@ -306,7 +314,7 @@ export class PageStore {
 					dataPage.id = id;
 					dataPage.cellSize = this._cellsPerPage;
 					if (this._usePx) {
-						Util.assert(this._pagePxRanges !== null, "PagePxRanges not initialized but using px", this.isDebug);
+						assert(this._pagePxRanges !== null, "PagePxRanges not initialized but using px", this.isDebug);
 						let pagePxX = this._pagePxRanges!.x[pageX];
 						let pagePxY = this._pagePxRanges!.y[pageY];
 						// Replaced Init for GC reasons
@@ -355,7 +363,7 @@ export class PageStore {
 	private insertPage(page: DataPage): void {
 		const isNew = !this._pageLookup.has(page.id);
 		if (!isNew) {
-			Arr.removeOneByFn(this._pageQueue, function(el: DataPage) {
+			removeOneByFn(this._pageQueue, function(el: DataPage) {
 				return el.id === page.id;
 			});
 		}
@@ -364,9 +372,9 @@ export class PageStore {
 	}
 	public calculateLockedPages(callers: CallerInternal[]): Dictionary<number> {
 		let unique = new Dictionary<number>();
-		Arr.forEach(
-			Arr.flatten<number>(
-				Arr.map(callers, (caller: CallerInternal) => {
+		forEach(
+			flatten<number>(
+				map(callers, (caller: CallerInternal) => {
 					return this.getPageIdsForViewPort(caller.loadPort);
 				})
 			),
@@ -378,7 +386,7 @@ export class PageStore {
 	public assembleDataFromPages(caller: CallerInternal): DataRow[] {
 		const result: DataRow[] = new Array<DataRow>();
 		let loadPort = this.getLoadPort(caller);
-		Util.loop(loadPort.size.y, (i) => 
+		loop(loadPort.size.y, (i) => 
 			result.push(new DataRow(loadPort.size.x))
 		);
 		const dataPages = this.getDataPages(caller);

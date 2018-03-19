@@ -1,4 +1,6 @@
-import { Initable, Poolable, Vec2 } from "goodcore";
+import { Initable } from "goodcore/standard/mixins/Initable";
+import { Poolable } from "goodcore/standard/mixins/Poolable";
+import { Vec2 } from "goodcore/struct/Vec2";
 import { IDataCellDto } from "./Dto/IDataCellDto";
 
 // This class is no longer in use

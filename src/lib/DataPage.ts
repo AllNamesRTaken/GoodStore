@@ -1,4 +1,7 @@
-import { Initable, Poolable, Rect, Vec2 } from "goodcore";
+import { Initable } from "goodcore/standard/mixins/Initable";
+import { Poolable } from "goodcore/standard/mixins/Poolable";
+import { Rect } from "goodcore/struct/Rect";
+import { Vec2 } from "goodcore/struct/Vec2";
 import { DataRow } from "./DataRow";
 import { IPageInfoDto } from "./Dto/IPageInfoDto";
 

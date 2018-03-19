@@ -1,10 +1,11 @@
-import { Range2, Vec2 } from "goodcore";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject } from "rxjs/BehaviorSubject";
 import { CallerInternal } from "./CallerInternal";
 import { DataStore } from "./DataStore";
 import { DataStoreConsumable } from "./DataStoreConsumable";
 import { IRequestConfig } from "./IRequestConfig";
 import { RequestConfig } from "./RequestConfig";
+import { Range2 } from "goodcore/struct/Range2";
+import { Vec2 } from "goodcore/struct/Vec2";
 export class CallerHandle {
 	private _id: number;
 	private _store: DataStore;

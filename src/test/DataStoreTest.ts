@@ -1,7 +1,8 @@
 import { should } from "chai";  // Using Should style
-//import { Range2 } from "goodcore/struct/Range2";
 import { Arr, Range2, Rect, Timer, Util, Vec2 } from "goodcore";
-import * as Rx from "rxjs";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
+import { Subscriber } from "rxjs/Subscriber";
 import { DataStore } from "../lib/DataStore";
 import { DataStoreConsumable } from "../lib/DataStoreConsumable";
 import { DataStoreRequestDto } from "../lib/Dto/DataStoreRequestDto";
@@ -21,8 +22,8 @@ describe("DataStore",
 				let dsc: IDataStoreConfig = {
 					pageSize: new Vec2(2, 2),
 					retainSize: 4,
-					endPointFn: (payload: DataStoreRequestDto): Rx.Observable<any> => {
-						let result = new Rx.Observable<any>( (observable: Rx.Subscriber<any>) => { 
+					endPointFn: (payload: DataStoreRequestDto): Observable<any> => {
+						let result = new Observable<any>( (observable: Subscriber<any>) => { 
 							observable.next(mocDataResult.shift()); 
 						});
 						return result;
@@ -84,8 +85,8 @@ describe("DataStore",
 				let dsc: IDataStoreConfig = {
 					pageSize: new Vec2(2, 2),
 					retainSize: 4,
-					endPointFn: (payload: DataStoreRequestDto): Rx.Observable<any> => {
-						let result = new Rx.Observable<any>( (observable: Rx.Subscriber<any>) => { 
+					endPointFn: (payload: DataStoreRequestDto): Observable<any> => {
+						let result = new Observable<any>( (observable: Subscriber<any>) => { 
 							observable.next(mocDataResult.shift()); 
 						});
 						return result;
@@ -148,8 +149,8 @@ describe("DataStore",
 				let dsc: IDataStoreConfig = {
 					pageSize: new Vec2(2, 2),
 					retainSize: 4,
-					endPointFn: (payload: DataStoreRequestDto): Rx.Observable<any> => {
-						let result = new Rx.Observable<any>( (observable: Rx.Subscriber<any>) => { 
+					endPointFn: (payload: DataStoreRequestDto): Observable<any> => {
+						let result = new Observable<any>( (observable: Subscriber<any>) => { 
 							observable.next(mocDataResult.shift()); 
 						});
 						return result;
@@ -188,8 +189,8 @@ describe("DataStore",
 				let dsc: IDataStoreConfig = {
 					pageSize: new Vec2(2, 2),
 					retainSize: 4,
-					endPointFn: (payload: DataStoreRequestDto): Rx.Observable<any> => {
-						let result = new Rx.Observable<any>( (observable: Rx.Subscriber<any>) => { 
+					endPointFn: (payload: DataStoreRequestDto): Observable<any> => {
+						let result = new Observable<any>( (observable: Subscriber<any>) => { 
 							observable.next(mocDataResult.shift()); 
 						});
 						return result;
@@ -241,8 +242,8 @@ describe("DataStore",
 				let dsc: IDataStoreConfig = {
 					pageSize: new Vec2(2, 2),
 					retainSize: 2,
-					endPointFn: (payload: DataStoreRequestDto): Rx.Observable<any> => {
-						let result = new Rx.Observable<any>( function(sub: Rx.Subscriber<any>) { 
+					endPointFn: (payload: DataStoreRequestDto): Observable<any> => {
+						let result = new Observable<any>( function(sub: Subscriber<any>) { 
 							sub.next(mocDataResult.shift());
 							sub.complete();
 						});
@@ -271,8 +272,8 @@ describe("DataStore",
 				let dsc: IDataStoreConfig = {
 					pageSize: new Vec2(2, 2),
 					retainSize: 6,
-					endPointFn: (payload: DataStoreRequestDto): Rx.Observable<any> => {
-						let result = Rx.Observable.create( (sub: Rx.Subscriber<any>) => { 
+					endPointFn: (payload: DataStoreRequestDto): Observable<any> => {
+						let result = Observable.create( (sub: Subscriber<any>) => { 
 							setTimeout(() => {
 								if (!sub.closed) {
 									sub.next(mocDataResult.shift());
@@ -307,8 +308,8 @@ describe("DataStore",
 				let dsc: IDataStoreConfig = {
 					pageSize: new Vec2(10, 10),
 					retainSize: 100,
-					endPointFn: (payload: DataStoreRequestDto): Rx.Observable<any> => {
-						let result = new Rx.Observable( (sub: Rx.Subscriber<any>) => { 
+					endPointFn: (payload: DataStoreRequestDto): Observable<any> => {
+						let result = new Observable( (sub: Subscriber<any>) => { 
 							sub.next(mocDataResult.shift());
 						});
 						return result;
@@ -346,8 +347,8 @@ describe("DataStore",
 				let dsc: IDataStoreConfig = {
 					pageSize: new Vec2(50, 50),
 					retainSize: 100,
-					endPointFn: (payload: DataStoreRequestDto): Rx.Observable<any> => {
-						let result = new Rx.Observable( (sub: Rx.Subscriber<any>) => { 
+					endPointFn: (payload: DataStoreRequestDto): Observable<any> => {
+						let result = new Observable( (sub: Subscriber<any>) => { 
 							sub.next(mocDataResult.shift());
 						});
 						return result;
