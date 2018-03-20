@@ -16,6 +16,7 @@ const isWatch = (arg) => (arg || "").match("^w|watch$") !== null;
 
 var libEntries = {};
 libEntries[package.name] = "./src/lib/index.ts";
+libEntries["webpackExternals"] = "./src/lib/webpackExternals.ts";
 
 module.exports = (envOptions) => {
     envOptions = envOptions || {};
