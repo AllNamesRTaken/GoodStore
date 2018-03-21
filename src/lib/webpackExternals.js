@@ -8,13 +8,13 @@ const rootPatterns = [{
     root: ['goodstore', '']
   }];
   
-  function rootForRequest(path: string) {
-    const match = rootPatterns.find((pattern: any, index: number, obj: any) => !!path.match(pattern.regex));
+  function rootForRequest(path) {
+    const match = rootPatterns.find((pattern, index, obj) => !!path.match(pattern.regex));
   
     if (match) {
       let m = path.match(match.regex);
-      if (m!.length > 1) {
-        match.root[match.root.length - 1] = m![m!.length - 1];
+      if (m.length > 1) {
+        match.root[match.root.length - 1] = m[m.length - 1];
       }
       return [...match.root];
     }
@@ -24,7 +24,7 @@ const rootPatterns = [{
   
   function goodstoreExternalsFactory() {
   
-    return function goodstoreExternals(context: any, request: string, callback: Function) {
+    return function goodstoreExternals(context, request, callback) {
   
       if (request.startsWith('goodstore/')) {
         return callback(null, {
