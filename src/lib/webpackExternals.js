@@ -26,7 +26,7 @@ const rootPatterns = [{
   
     return function goodstoreExternals(context, request, callback) {
   
-      if (request.startsWith('goodstore/')) {
+      if (request.startsWith('goodstore')) {
         return callback(null, {
           root: rootForRequest(request),
           commonjs: request,

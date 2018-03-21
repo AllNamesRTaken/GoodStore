@@ -1,6 +1,6 @@
 {
   "name": "goodstore",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "A Datastore module that abstracts the loading of data from the usage of data",
   "main": "goodstore.bundle.js",
   "module": "index.js",
@@ -30,7 +30,6 @@
     "rxjs": "^5.5.7"
   },
   "devDependencies": {
-    "goodcore": "^0.17.8",
     "@std/esm": "^0.24.0",
     "@types/chai": "^4.0.4",
     "@types/jquery": "^3.2.12",
@@ -42,6 +41,7 @@
     "chalk": "^2.1.0",
     "coveralls": "^2.13.1",
     "fork-ts-checker-webpack-plugin": "^0.4.1",
+    "goodcore": "^0.17.14",
     "gulp": "^3.9.1",
     "gulp-babel": "^7.0.0",
     "gulp-debug": "^3.1.0",
