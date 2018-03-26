@@ -1,6 +1,6 @@
 {
   "name": "goodstore",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "A Datastore module that abstracts the loading of data from the usage of data",
   "main": "goodstore.bundle.js",
   "module": "index.js",
